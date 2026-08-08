@@ -139,6 +139,14 @@ button.small{padding:7px 12px;font-size:12px}
   </div>
 
   <div class="card">
+    <h2>嵌入影片</h2>
+    <p class="hint">貼 YouTube 網址就好(整條貼,不用挑 ID)。顯示在「專輯／吊飾」上面。</p>
+    <div class="switch"><input type="checkbox" id="vd_on"><label for="vd_on" style="margin:0">顯示</label></div>
+    <label>小標</label><input id="vd_title">
+    <label>YouTube 網址</label><input id="vd_id" placeholder="https://www.youtube.com/watch?v=...">
+  </div>
+
+  <div class="card">
     <h2>專輯／吊飾</h2>
     <div class="switch"><input type="checkbox" id="rl_on"><label for="rl_on" style="margin:0">顯示這一區</label></div>
     <label>這一區的小標</label><input id="rl_title">
@@ -258,6 +266,7 @@ function fill(){
   val('nl_submit', d.newsletter?.submitText); val('nl_thanks', d.newsletter?.thanks);
   val('nl_action', d.newsletter?.formAction); val('nl_field', d.newsletter?.formField); val('nl_url', d.newsletter?.url);
 
+  chk('vd_on', d.video?.enabled); val('vd_title', d.video?.title); val('vd_id', d.video?.youtubeId);
   chk('rl_on', d.releases?.enabled); val('rl_title', d.releases?.title);
   renderItems(d.releases?.items||[]);
 
@@ -350,6 +359,7 @@ $('saveBtn').onclick = async () => {
     newsletter:{ enabled:String($('nl_on').checked), buttonText:$('nl_text').value.trim(), desc:$('nl_desc').value.trim(),
                  submitText:$('nl_submit').value.trim(), thanks:$('nl_thanks').value.trim(),
                  formAction:$('nl_action').value.trim(), formField:$('nl_field').value.trim(), url:$('nl_url').value.trim() },
+    video:{ enabled:String($('vd_on').checked), title:$('vd_title').value.trim(), youtubeId:$('vd_id').value.trim() },
     releases:{ enabled:String($('rl_on').checked), title:$('rl_title').value.trim(), items:collectItems() },
     about:{ enabled:String($('ab_on').checked), title:$('ab_title').value.trim(), body:$('ab_body').value, signature:$('ab_sig').value.trim() },
     extra:{ enabled:String($('ex_on').checked), buttonText:$('ex_text').value.trim(), desc:$('ex_desc').value.trim(), url:$('ex_url').value.trim() },

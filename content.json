@@ -47,9 +47,14 @@
     "desc": "偶爾寫的，不定期。留個信箱，我寄給你。",
     "submitText": "訂閱",
     "thanks": "收到了，謝謝你 ✉",
-    "formAction": "",
-    "formField": "email",
+    "formAction": "https://docs.google.com/forms/d/e/1FAIpQLSfCc_Mzr8onuk3LdeLt8jANVdJJaPiB2L-6gB-4YlGXg1FAbw/formResponse",
+    "formField": "entry.1488140464",
     "url": ""
+  },
+  "video": {
+    "enabled": "true",
+    "title": "周邊介紹",
+    "youtubeId": "dNQZJ_1OXLc"
   },
   "releases": {
     "enabled": "true",
