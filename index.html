@@ -52,8 +52,10 @@
   --px:4px;
   --pixel-en:'Press Start 2P','Cubic 11',monospace;
   --pixel-tc:'Cubic 11','Press Start 2P','Noto Sans TC',monospace;
-  /* 名字專用:Fusion Pixel 在前(有「皞」),Cubic 11 墊後(subset 沒收到的字還是像素字) */
-  --pixel-name:'Fusion Pixel','Cubic 11','Press Start 2P','Noto Sans TC',monospace;
+  /* 名字專用(2026-08-09 耗耗:「有點醜…找一個比較清楚的,不一定要像素風」)
+     → 改用系統中文字:iPhone/Mac 是 PingFang、Windows 是微軟正黑,零下載、渲染最好看,
+       而且「皞」這種罕用字系統字型一定有,不會再缺字。像素感留給其他元素。 */
+  --name-face:'PingFang TC','PingFang SC','Noto Sans TC','Microsoft JhengHei',system-ui,sans-serif;
   --sans:'Noto Sans TC','PingFang TC',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
@@ -100,7 +102,7 @@ img{max-width:100%;display:block}
   font-family:var(--pixel-en);font-size:9px;letter-spacing:.1em;
   border-bottom:var(--px) solid var(--brass);
 }
-.bar__l{color:var(--brass-light);font-family:var(--pixel-name)}
+.bar__l{color:var(--brass-light);font-family:var(--name-face);font-size:11px;letter-spacing:.04em}
 .bar__r{color:var(--ink-mute)}
 
 .wrap{max-width:560px;margin:0 auto;padding:0 18px 72px;position:relative;z-index:2;
@@ -115,7 +117,7 @@ img{max-width:100%;display:block}
 }
 .top__avatar[hidden]{display:none}
 .top__name{
-  font-family:var(--pixel-name);font-weight:400;
+  font-family:var(--name-face);font-weight:600;
   font-size:clamp(34px,10vw,48px);line-height:1.25;margin:0 0 12px;letter-spacing:.06em;
   color:var(--ink);
 }
