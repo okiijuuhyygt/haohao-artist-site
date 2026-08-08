@@ -38,8 +38,12 @@
    瀏覽器會自己抓別套字補那一個字 → 名字三個字看起來不同掛,耗耗當場抓到。
    Fusion Pixel 12px 的繁中集就是拿 Cubic 11 縫的,字形幾乎一模一樣但收了 36,518 字,
    所以「換一套有這個字的像素字型」比「名字改成非像素字」好 —— 像素感一點都沒掉。
-   這裡只 subset 站上真的會用到的 594 字 = 22 KB(完整版 904 KB,不必扛)。
-   ⚠️ 只用在名字(.top__name / .bar__l);其他地方維持 Cubic 11,沒動耗耗看過的版型。 */
+   這裡只 subset 站上真的會用到的字元(2026-08-09 重切成 671 個 = 25 KB;完整版 904 KB,不必扛)。
+   ⚠️ **範圍改過兩次,以現在這版為準**:
+     ・第一版只掛在名字上 → 名字後來改成系統字(耗耗:像素字有點醜),那個用途沒了
+     ・**現在是掛在 `--pixel-tc`,整站的中文像素字都走它** —— 因為「我是則皞」那個小標又掉了一次,
+       只修單一元素是在打地鼠。Cubic 11 留在 stack 後面墊底。
+   🩸 **改內容之後如果出現新的罕用字,要回來重切 subset**(工法寫在 README「字型」那節)。 */
 @font-face{
   font-family:"Fusion Pixel";
   src:url("assets/fusion-pixel-12px-tc-subset.woff2") format("woff2");
@@ -51,7 +55,11 @@
   --brass:#b8801f; --brass-light:#d4a13a; --brass-deep:#6e4d10;
   --px:4px;
   --pixel-en:'Press Start 2P','Cubic 11',monospace;
-  --pixel-tc:'Cubic 11','Press Start 2P','Noto Sans TC',monospace;
+  /* 🩸 2026-08-09 第二次踩:名字修好了,「我是則皞」那個小標又掉一次(它也是像素字)。
+     只修一個元素是在打地鼠 —— 改成整站的中文像素字都先走 Fusion Pixel(有「皞」,
+     而且它的繁中集本來就是拿 Cubic 11 縫的,字形幾乎一樣),Cubic 11 留在後面墊底。
+     subset 收的是「站上真的會出現的 671 個字元」,所以實際上每個字都由 Fusion 畫,不會混。 */
+  --pixel-tc:'Fusion Pixel','Cubic 11','Press Start 2P','Noto Sans TC',monospace;
   /* 名字專用(2026-08-09 耗耗:「有點醜…找一個比較清楚的,不一定要像素風」)
      → 改用系統中文字:iPhone/Mac 是 PingFang、Windows 是微軟正黑,零下載、渲染最好看,
        而且「皞」這種罕用字系統字型一定有,不會再缺字。像素感留給其他元素。 */
