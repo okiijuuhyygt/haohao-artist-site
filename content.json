@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "陳則皞",
+    "tagline": "暫時陪伴你走過一段小日子",
+    "avatar": ""
+  },
+  "marquee": {
+    "enabled": "true",
+    "speed": 26,
+    "items": [
+      "haohao.unzip podcast 上線了　各大平台收聽中",
+      "暫時陪伴你走過一段小日子"
+    ]
+  },
+  "socials": [
+    { "id": "spotify",   "label": "SPOTIFY",   "url": "https://open.spotify.com/artist/2td4gZxQongsxOty2EnlB5" },
+    { "id": "threads",   "label": "THREADS",   "url": "https://www.threads.com/@haohao.zip" },
+    { "id": "instagram", "label": "INSTAGRAM", "url": "https://www.instagram.com/haohao.zip" },
+    { "id": "podcast",   "label": "PODCAST",   "url": "https://podcasts.apple.com/us/podcast/haohao-unzip/id1811831632" }
+  ],
+  "podcast": {
+    "enabled": "true",
+    "buttonText": "haohao.unzip",
+    "desc": "podcast 上線了｜各大平台收聽",
+    "url": "https://open.firstory.me/user/haohao-zip/platforms"
+  },
+  "newsletter": {
+    "enabled": "true",
+    "buttonText": "在你的信匣裡躺一封我的信 ✉",
+    "desc": "",
+    "url": ""
+  },
+  "releases": {
+    "enabled": "true",
+    "title": "｜專輯｜小廢物｜支匙｜",
+    "items": [
+      { "title": "土豆麵筋",                   "sub": "可以聽的專輯吊飾", "cover": "", "url": "https://forms.gle/ePeu46PXqdLs1TuR9" },
+      { "title": "於是乎我忘了前奏",             "sub": "可以聽的專輯吊飾", "cover": "", "url": "https://forms.gle/JFUgQb7ZauhtnCYUA" },
+      { "title": "我的愛人已經是別人的愛人了",   "sub": "可以聽的專輯吊飾", "cover": "", "url": "https://forms.gle/F2JgG58AGzsfCiwz7" }
+    ]
+  },
+  "about": {
+    "enabled": "true",
+    "title": "📓 我是則皞",
+    "body": "《十七樓》是一張想在租屋處完成的專輯。租期將近五年的時間，數不清有多少崩潰做音樂的日子，很多開心的日子，感傷的日子，窗戶外可以看出去的山，夜晚燈火通明像個小九份，抽菸的片刻，酗酒的時光，而我會不會來不及。\n\n台北的疏離我很喜歡，十七樓這張，我也會順由初衷在新店完成，拖著33歲的身體，告訴自己還行還行，我始終不想用懷才不遇或是受害者的角色看待音樂人這個身份，這麼任性又愉悅的選擇，是一種自我追求的過程，我是滿足的。\n\n「可能骨子裡有些許成份的自信吧！但同時我也超怪，所以你們需要接受我很怪這件事，才華本身才有意義，不然我就只是一個會自己發出聲音的怪人而已。」",
+    "signature": "－寫於 2025/2/20 的日記"
+  },
+  "extra": {
+    "enabled": "false",
+    "buttonText": "",
+    "desc": "",
+    "url": ""
+  },
+  "footer": {
+    "text": "© 陳則皞"
+  }
+}

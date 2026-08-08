@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>系統登入</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+/* =========================================================
+   後台 —— 改完直接 commit 回 GitHub,不用碰 code。
+   🩸 耗耗 2026-08-09 明講:「畫面上要顯示『密碼』,不要打說『token』,
+      不然大家看到會說:靠北,原來你是用 token 當密碼!」
+      → 這份檔案裡**任何使用者看得到的地方都只寫「密碼」**。
+        變數名叫 token 沒關係(那是 code,不是畫面)。
+   ========================================================= */
+:root{
+  --navy:#0b0b2b;--navy-2:#16163f;--navy-3:#2a2a63;
+  --red:#e52521;--yellow:#fbd000;--white:#fcfcfc;--grey:#9a9ab5;--green:#3ad07a;
+  --cjk:'PingFang TC','Noto Sans TC',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--white);font-family:var(--cjk);line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 96px}
+h1{font-size:19px;letter-spacing:.08em;margin:0 0 4px}
+.sub{color:var(--grey);font-size:13px;margin:0 0 24px}
+
+/* 登入 */
+#gate{max-width:380px;margin:14vh auto;padding:26px 22px;background:var(--navy-2);box-shadow:0 0 0 2px var(--navy-3)}
+#gate h1{margin-bottom:16px}
+label{display:block;font-size:12px;color:var(--grey);margin:14px 0 6px;letter-spacing:.04em}
+input,textarea,select{
+  width:100%;background:var(--navy);color:var(--white);border:0;
+  box-shadow:0 0 0 2px var(--navy-3);padding:11px 12px;font:inherit;font-size:14px;
+}
+input:focus,textarea:focus{outline:0;box-shadow:0 0 0 2px var(--yellow)}
+textarea{resize:vertical;min-height:88px;line-height:1.85}
+button{
+  font:inherit;font-weight:800;cursor:pointer;border:0;padding:12px 18px;
+  background:var(--yellow);color:var(--navy);box-shadow:0 4px 0 0 #8a7200;
+}
+button:active{transform:translateY(4px);box-shadow:none}
+button.ghost{background:var(--navy-3);color:var(--white);box-shadow:0 4px 0 0 #05051a}
+button.small{padding:7px 12px;font-size:12px}
+.msg{font-size:13px;margin-top:12px;min-height:20px}
+.msg.err{color:var(--red)} .msg.ok{color:var(--green)}
+
+/* 主體 */
+#app{display:none}
+.card{background:var(--navy-2);box-shadow:0 0 0 2px var(--navy-3);padding:20px 18px;margin:0 0 18px}
+.card h2{font-size:15px;margin:0 0 4px;letter-spacing:.06em}
+.card .hint{color:var(--grey);font-size:12px;margin:0 0 8px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.row{grid-template-columns:1fr}}
+.sub-item{background:var(--navy);padding:14px;box-shadow:0 0 0 2px var(--navy-3);margin-top:12px}
+.thumb{width:54px;height:54px;object-fit:cover;background:var(--navy-3);box-shadow:0 0 0 2px var(--grey);display:block}
+.filerow{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.switch{display:flex;gap:8px;align-items:center;margin-top:12px}
+.switch input{width:auto}
+.bar{
+  position:fixed;left:0;right:0;bottom:0;background:var(--navy-2);
+  box-shadow:0 -2px 0 0 var(--navy-3);padding:12px 16px;
+  display:flex;gap:12px;align-items:center;justify-content:flex-end;
+}
+.bar .status{margin-right:auto;font-size:13px;color:var(--grey)}
+</style>
+</head>
+<body>
+
+<!-- ── 登入 ───────────────────────────────── -->
+<div id="gate">
+  <h1>系統登入</h1>
+  <p class="sub">請輸入密碼</p>
+  <label for="pw">密碼</label>
+  <input type="password" id="pw" autocomplete="current-password" autofocus>
+  <div style="margin-top:16px"><button id="loginBtn">登入</button></div>
+  <p class="msg" id="gateMsg"></p>
+</div>
+
+<!-- ── 主體 ───────────────────────────────── -->
+<div id="app"><div class="wrap">
+  <h1>網站內容</h1>
+  <p class="sub">改完按右下角「儲存」,網站大約一分鐘後會更新。</p>
+
+  <div class="card">
+    <h2>基本</h2>
+    <div class="row">
+      <div><label>名字</label><input id="m_title"></div>
+      <div><label>一句話</label><input id="m_tagline"></div>
+    </div>
+    <label>大頭照</label>
+    <div class="filerow">
+      <img class="thumb" id="m_avatar_img" alt="">
+      <input type="file" id="m_avatar_file" accept="image/*" style="width:auto">
+      <button class="ghost small" id="m_avatar_clear" type="button">移除</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>跑馬燈</h2>
+    <p class="hint">一行一則,會輪流跑。滑鼠移上去會暫停。</p>
+    <div class="switch"><input type="checkbox" id="mq_on"><label for="mq_on" style="margin:0">顯示跑馬燈</label></div>
+    <label>內容(一行一則)</label><textarea id="mq_items"></textarea>
+    <label>跑一圈幾秒(數字越大越慢)</label><input id="mq_speed" type="number" min="8" max="120">
+  </div>
+
+  <div class="card">
+    <h2>社群按鈕</h2>
+    <p class="hint">網址留空 = 那顆按鈕不出現。</p>
+    <div id="socials"></div>
+  </div>
+
+  <div class="card">
+    <h2>Podcast 按鈕</h2>
+    <div class="switch"><input type="checkbox" id="pc_on"><label for="pc_on" style="margin:0">顯示</label></div>
+    <div class="row">
+      <div><label>按鈕文字</label><input id="pc_text"></div>
+      <div><label>小字說明</label><input id="pc_desc"></div>
+    </div>
+    <label>網址</label><input id="pc_url">
+  </div>
+
+  <div class="card">
+    <h2>電子報按鈕</h2>
+    <p class="hint">🔴 Portaly 那顆是他們家內建的功能,搬不過來。這裡要放一個你自己的收信表單(Google 表單 / Kit / Tally 都可以)。網址空著這顆按鈕就不會出現。</p>
+    <div class="switch"><input type="checkbox" id="nl_on"><label for="nl_on" style="margin:0">顯示</label></div>
+    <div class="row">
+      <div><label>按鈕文字</label><input id="nl_text"></div>
+      <div><label>小字說明</label><input id="nl_desc"></div>
+    </div>
+    <label>網址</label><input id="nl_url">
+  </div>
+
+  <div class="card">
+    <h2>專輯／吊飾</h2>
+    <div class="switch"><input type="checkbox" id="rl_on"><label for="rl_on" style="margin:0">顯示這一區</label></div>
+    <label>這一區的小標</label><input id="rl_title">
+    <div id="items"></div>
+    <div style="margin-top:14px"><button class="ghost small" id="addItem" type="button">＋ 新增一個</button></div>
+  </div>
+
+  <div class="card">
+    <h2>我是則皞</h2>
+    <div class="switch"><input type="checkbox" id="ab_on"><label for="ab_on" style="margin:0">顯示</label></div>
+    <label>標題</label><input id="ab_title">
+    <label>內文(空一行 = 分段)</label><textarea id="ab_body" style="min-height:260px"></textarea>
+    <label>落款</label><input id="ab_sig">
+  </div>
+
+  <div class="card">
+    <h2>額外按鈕(預留)</h2>
+    <p class="hint">以後要掛遊戲入口或別的東西時用這個。平常關著。</p>
+    <div class="switch"><input type="checkbox" id="ex_on"><label for="ex_on" style="margin:0">顯示</label></div>
+    <div class="row">
+      <div><label>按鈕文字</label><input id="ex_text"></div>
+      <div><label>小字說明</label><input id="ex_desc"></div>
+    </div>
+    <label>網址</label><input id="ex_url">
+  </div>
+
+  <div class="card">
+    <h2>頁尾</h2>
+    <label>文字</label><input id="ft_text">
+  </div>
+</div></div>
+
+<div class="bar" id="bar" style="display:none">
+  <span class="status" id="status"></span>
+  <button class="ghost" id="reloadBtn" type="button">重新讀取</button>
+  <button id="saveBtn" type="button">儲存</button>
+  <button class="ghost" id="logoutBtn" type="button">登出</button>
+</div>
+
+<script>
+/* ★ CONFIG ─────────────────────────────── */
+const REPO_OWNER   = 'okiijuuhyygt';
+const REPO_NAME    = 'haohao-artist-site';
+const CONTENT_PATH = 'content.json';
+const ASSET_DIR    = 'assets';
+const LS_KEY       = 'haohao-artist-admin-v1';
+/* ──────────────────────────────────────── */
+
+const $ = id => document.getElementById(id);
+let DATA = null, SHA = null;
+
+const api = p => `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${p}`;
+const hdr = () => ({ 'Authorization':'Bearer '+localStorage.getItem(LS_KEY), 'Accept':'application/vnd.github+json' });
+
+/* UTF-8 安全的 base64 —— 直接 btoa(中文) 會炸 */
+const b64 = str => btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+const unb64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')), c=>c.charCodeAt(0)));
+
+function say(m, cls){ const e=$('status'); e.textContent=m||''; e.className='status '+(cls||''); }
+
+/* ── 登入 ─────────────────────────────── */
+async function tryLogin(pw){
+  const msg = $('gateMsg');
+  msg.className='msg'; msg.textContent='檢查中…';
+  try{
+    const r = await fetch(api(CONTENT_PATH), { headers:{ 'Authorization':'Bearer '+pw, 'Accept':'application/vnd.github+json' }});
+    if(!r.ok) throw new Error(r.status===404 ? '找不到網站資料(repo 或檔名不對)' : '密碼不對');
+    localStorage.setItem(LS_KEY, pw);
+    $('gate').style.display='none'; $('app').style.display='block'; $('bar').style.display='flex';
+    await load();
+  }catch(e){
+    msg.className='msg err'; msg.textContent = e.message;
+    $('pw').value=''; $('pw').focus();
+  }
+}
+$('loginBtn').onclick = () => tryLogin($('pw').value.trim());
+$('pw').onkeydown = e => { if(e.key==='Enter') $('loginBtn').click(); };
+$('logoutBtn').onclick = () => { localStorage.removeItem(LS_KEY); location.reload(); };
+
+/* ── 讀 ───────────────────────────────── */
+async function load(){
+  say('讀取中…');
+  const r = await fetch(api(CONTENT_PATH)+'?ref=main&t='+Date.now(), { headers: hdr() });
+  if(!r.ok){ say('讀取失敗:'+r.status,'err'); return; }
+  const j = await r.json();
+  SHA = j.sha; DATA = JSON.parse(unb64(j.content));
+  fill(); say('已讀取','ok');
+}
+$('reloadBtn').onclick = load;
+
+/* ── 表單 <-> 資料 ─────────────────────── */
+const val = (id,v) => { $(id).value = v==null?'':v; };
+const chk = (id,v) => { $(id).checked = (v===true||v==='true'); };
+
+function fill(){
+  const d = DATA;
+  val('m_title', d.meta?.title); val('m_tagline', d.meta?.tagline);
+  setAvatar(d.meta?.avatar||'');
+
+  chk('mq_on', d.marquee?.enabled);
+  const items = Array.isArray(d.marquee?.items) ? d.marquee.items : String(d.marquee?.items||'').split(/\r?\n/);
+  val('mq_items', items.filter(Boolean).join('\n'));
+  val('mq_speed', d.marquee?.speed ?? 26);
+
+  $('socials').innerHTML = '';
+  (d.socials||[]).forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className='sub-item';
+    el.innerHTML = `<div class="row">
+      <div><label>按鈕文字</label><input data-s="${i}" data-k="label" value="${(s.label||'').replace(/"/g,'&quot;')}"></div>
+      <div><label>網址</label><input data-s="${i}" data-k="url" value="${(s.url||'').replace(/"/g,'&quot;')}"></div></div>`;
+    $('socials').appendChild(el);
+  });
+
+  chk('pc_on', d.podcast?.enabled); val('pc_text', d.podcast?.buttonText); val('pc_desc', d.podcast?.desc); val('pc_url', d.podcast?.url);
+  chk('nl_on', d.newsletter?.enabled); val('nl_text', d.newsletter?.buttonText); val('nl_desc', d.newsletter?.desc); val('nl_url', d.newsletter?.url);
+
+  chk('rl_on', d.releases?.enabled); val('rl_title', d.releases?.title);
+  renderItems(d.releases?.items||[]);
+
+  chk('ab_on', d.about?.enabled); val('ab_title', d.about?.title); val('ab_body', d.about?.body); val('ab_sig', d.about?.signature);
+  chk('ex_on', d.extra?.enabled); val('ex_text', d.extra?.buttonText); val('ex_desc', d.extra?.desc); val('ex_url', d.extra?.url);
+  val('ft_text', d.footer?.text);
+}
+
+function setAvatar(src){
+  $('m_avatar_img').src = src || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+  $('m_avatar_img').dataset.path = src || '';
+}
+$('m_avatar_clear').onclick = () => setAvatar('');
+$('m_avatar_file').onchange = e => upload(e.target.files[0], p => setAvatar(p));
+
+function renderItems(list){
+  $('items').innerHTML = '';
+  list.forEach((it,i)=>{
+    const el = document.createElement('div');
+    el.className='sub-item';
+    el.innerHTML = `
+      <div class="row">
+        <div><label>名稱</label><input data-i="${i}" data-k="title" value="${(it.title||'').replace(/"/g,'&quot;')}"></div>
+        <div><label>小字</label><input data-i="${i}" data-k="sub" value="${(it.sub||'').replace(/"/g,'&quot;')}"></div>
+      </div>
+      <label>網址</label><input data-i="${i}" data-k="url" value="${(it.url||'').replace(/"/g,'&quot;')}">
+      <label>封面</label>
+      <div class="filerow">
+        <img class="thumb" data-cov="${i}" src="${it.cover||'data:image/gif;base64,R0lGODlhAQABAAAAACw='}" alt="">
+        <input type="file" accept="image/*" data-file="${i}" style="width:auto">
+        <button class="ghost small" type="button" data-rm="${i}">刪掉這個</button>
+      </div>`;
+    $('items').appendChild(el);
+  });
+  $('items').querySelectorAll('[data-file]').forEach(inp=>{
+    inp.onchange = e => upload(e.target.files[0], p => {
+      $('items').querySelector(`[data-cov="${inp.dataset.file}"]`).src = p;
+    });
+  });
+  $('items').querySelectorAll('[data-rm]').forEach(b=>{
+    b.onclick = () => { const l = collectItems(); l.splice(+b.dataset.rm,1); renderItems(l); };
+  });
+}
+$('addItem').onclick = () => renderItems(collectItems().concat([{title:'',sub:'',url:'',cover:''}]));
+
+function collectItems(){
+  const n = $('items').querySelectorAll('.sub-item').length, out=[];
+  for(let i=0;i<n;i++){
+    const g = k => $('items').querySelector(`[data-i="${i}"][data-k="${k}"]`)?.value.trim() || '';
+    let cov = $('items').querySelector(`[data-cov="${i}"]`)?.getAttribute('src') || '';
+    if (cov.startsWith('data:')) cov='';
+    out.push({ title:g('title'), sub:g('sub'), cover:cov, url:g('url') });
+  }
+  return out;
+}
+
+/* ── 上傳圖片 ─────────────────────────── */
+async function upload(file, done){
+  if(!file) return;
+  say('上傳中…');
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let bin=''; buf.forEach(b=>bin+=String.fromCharCode(b));
+  const safe = file.name.replace(/[^\w.\-]/g,'_');
+  const path = `${ASSET_DIR}/${Date.now()}-${safe}`;
+  const r = await fetch(api(path), {
+    method:'PUT', headers:{...hdr(),'Content-Type':'application/json'},
+    body: JSON.stringify({ message:`後台上傳 ${safe}`, content: btoa(bin) })
+  });
+  if(!r.ok){ say('上傳失敗:'+r.status,'err'); return; }
+  done(path);                                  // 存相對路徑,搬網域也不會壞
+  say('圖片上傳好了,記得按「儲存」','ok');
+}
+
+/* ── 存 ───────────────────────────────── */
+$('saveBtn').onclick = async () => {
+  if(!DATA){ say('還沒讀到資料','err'); return; }
+  const socials = [];
+  $('socials').querySelectorAll('.sub-item').forEach((_,i)=>{
+    const g = k => $('socials').querySelector(`[data-s="${i}"][data-k="${k}"]`)?.value.trim()||'';
+    socials.push({ id:(DATA.socials?.[i]?.id)||'s'+i, label:g('label'), url:g('url') });
+  });
+
+  const out = {
+    meta:{ title:$('m_title').value.trim(), tagline:$('m_tagline').value.trim(),
+           avatar:$('m_avatar_img').dataset.path || '' },
+    marquee:{ enabled:String($('mq_on').checked), speed:Number($('mq_speed').value)||26,
+              items:$('mq_items').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean) },
+    socials,
+    podcast:{ enabled:String($('pc_on').checked), buttonText:$('pc_text').value.trim(), desc:$('pc_desc').value.trim(), url:$('pc_url').value.trim() },
+    newsletter:{ enabled:String($('nl_on').checked), buttonText:$('nl_text').value.trim(), desc:$('nl_desc').value.trim(), url:$('nl_url').value.trim() },
+    releases:{ enabled:String($('rl_on').checked), title:$('rl_title').value.trim(), items:collectItems() },
+    about:{ enabled:String($('ab_on').checked), title:$('ab_title').value.trim(), body:$('ab_body').value, signature:$('ab_sig').value.trim() },
+    extra:{ enabled:String($('ex_on').checked), buttonText:$('ex_text').value.trim(), desc:$('ex_desc').value.trim(), url:$('ex_url').value.trim() },
+    footer:{ text:$('ft_text').value.trim() }
+  };
+
+  say('儲存中…');
+  // 🩸 存之前一定要重抓 sha —— 中間如果有人(或我)改過,拿舊 sha 會 409
+  const cur = await fetch(api(CONTENT_PATH)+'?t='+Date.now(), { headers: hdr() });
+  if(cur.ok) SHA = (await cur.json()).sha;
+
+  const r = await fetch(api(CONTENT_PATH), {
+    method:'PUT', headers:{...hdr(),'Content-Type':'application/json'},
+    body: JSON.stringify({ message:'後台更新內容', content: b64(JSON.stringify(out,null,2)+'\n'), sha: SHA })
+  });
+  if(!r.ok){ say('儲存失敗:'+r.status+'(可以按「重新讀取」再試一次)','err'); return; }
+  DATA = out; SHA = (await r.json()).content.sha;
+  say('存好了。網站大約一分鐘後更新。','ok');
+};
+
+/* 已經登入過就直接進去 */
+if(localStorage.getItem(LS_KEY)) tryLogin(localStorage.getItem(LS_KEY));
+</script>
+</body>
+</html>

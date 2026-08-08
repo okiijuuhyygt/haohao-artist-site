@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>陳則皞</title>
+<meta name="description" content="陳則皞 — 暫時陪伴你走過一段小日子。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="陳則皞">
+<meta property="og:description" content="暫時陪伴你走過一段小日子">
+<meta name="theme-color" content="#0b0b2b">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   陳則皞 · 一頁式
+   ── 這是「Portaly 的骨架 + 像素皮膚」,不是模擬一台遊戲機。
+      耗耗 2026-08-09 明講:「我不要真的 8-bit,它就是一頁網頁,
+      有點像是皮膚」「不需要有那麼多花裡胡哨的東西」。
+      → 沒有開機畫面、沒有視窗標題列、沒有假的主機外殼。
+        皮膚只做三件事:像素字、厚邊框、按下去會凹。
+   ── 內容全部來自 content.json,後台改了這裡就會變。
+   ========================================================= */
+:root{
+  --navy:#0b0b2b; --navy-2:#16163f; --navy-3:#2a2a63;
+  --red:#e52521; --yellow:#fbd000; --white:#fcfcfc; --grey:#9a9ab5;
+  --px:2px;
+  --pixel-en:'Press Start 2P',ui-monospace,Menlo,monospace;
+  --cjk:'PingFang TC','Noto Sans TC','Microsoft JhengHei',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--navy);color:var(--white);
+  font-family:var(--cjk);line-height:1.9;overflow-x:hidden;
+}
+/* 掃描線刻意做很淡 —— 是「皮膚的質感」,不是要你覺得在看 CRT */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.13) 0 1px,transparent 1px 3px);
+}
+img{max-width:100%;display:block;image-rendering:pixelated}
+
+/* ── 跑馬燈(耗耗指名要,搬自巷弄官網,hover 會停)────── */
+.marquee{
+  position:sticky;top:0;z-index:60;height:32px;line-height:32px;
+  background:var(--red);color:var(--white);
+  font-family:var(--pixel-en);font-size:9px;letter-spacing:.14em;
+  overflow:hidden;white-space:nowrap;border-bottom:var(--px) solid #7a1210;
+}
+.marquee[hidden]{display:none!important}
+.marquee__track{
+  display:inline-block;padding-left:100%;
+  animation:marquee-scroll var(--marquee-speed,26s) linear infinite;will-change:transform;
+}
+.marquee:hover .marquee__track{animation-play-state:paused}
+@keyframes marquee-scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.marquee__track{animation:none;padding-left:0}}
+
+.wrap{max-width:560px;margin:0 auto;padding:0 18px 72px;opacity:1;transition:opacity .2s}
+.wrap[data-ready="0"]{opacity:0}
+
+/* ── 頭 ───────────────────────────────────── */
+.top{padding:48px 0 8px;text-align:center}
+.top__avatar{
+  width:104px;height:104px;margin:0 auto 22px;object-fit:cover;background:var(--navy-2);
+  box-shadow:0 0 0 var(--px) var(--white),0 0 0 calc(var(--px)*3) var(--navy-3);
+}
+.top__avatar[hidden]{display:none}
+.top__name{
+  font-weight:900;font-size:clamp(32px,9vw,44px);line-height:1.2;margin:0 0 14px;
+  letter-spacing:.12em;
+  text-shadow:3px 3px 0 var(--red),6px 6px 0 rgba(0,0,0,.5);
+}
+.top__tag{margin:0;font-size:14px;color:var(--yellow);letter-spacing:.06em}
+
+/* ── 社群列 ───────────────────────────────── */
+.socials{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px 0 0}
+.social{
+  font-family:var(--pixel-en);font-size:8px;letter-spacing:.1em;text-decoration:none;
+  color:var(--white);background:var(--navy-2);padding:11px 12px;
+  box-shadow:0 0 0 var(--px) var(--navy-3),0 4px 0 0 #05051a;
+  transition:transform .05s,box-shadow .05s;
+}
+.social:hover{background:var(--navy-3)}
+.social:active{transform:translateY(4px);box-shadow:0 0 0 var(--px) var(--navy-3)}
+
+/* ── 主要按鈕 ─────────────────────────────── */
+.btn{
+  display:block;margin:16px 0 0;text-align:center;text-decoration:none;
+  font-weight:800;font-size:15px;letter-spacing:.05em;line-height:1.5;
+  color:var(--navy);background:var(--yellow);padding:16px 14px;
+  box-shadow:0 0 0 var(--px) var(--white),0 6px 0 0 #8a7200;
+  transition:transform .05s,box-shadow .05s,filter .1s;
+}
+.btn small{display:block;font-weight:600;font-size:11px;opacity:.72;margin-top:5px;letter-spacing:0}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(6px);box-shadow:0 0 0 var(--px) var(--white)}
+.btn[hidden]{display:none}
+.btn--red{background:var(--red);color:var(--white);box-shadow:0 0 0 var(--px) var(--white),0 6px 0 0 #7a1210}
+.btn--red:active{box-shadow:0 0 0 var(--px) var(--white)}
+.blk{margin-top:38px}
+
+/* ── 段落標題(只是一行字,不是視窗標題列)────────── */
+.label{
+  font-family:var(--pixel-en);font-size:8px;letter-spacing:.18em;color:var(--grey);
+  text-align:center;margin:0 0 16px;
+}
+.label[hidden]{display:none}
+
+/* ── 吊飾卡 ───────────────────────────────── */
+.items{display:grid;gap:12px}
+.item{
+  display:flex;gap:14px;align-items:center;text-decoration:none;color:var(--white);
+  background:var(--navy-2);padding:12px;
+  box-shadow:0 0 0 var(--px) var(--navy-3),0 4px 0 0 #05051a;
+  transition:transform .05s,box-shadow .05s;
+}
+.item:hover{background:#1d1d4d}
+.item:active{transform:translateY(4px);box-shadow:0 0 0 var(--px) var(--navy-3)}
+.item__cover{
+  width:56px;height:56px;flex:0 0 56px;background:var(--navy-3);
+  box-shadow:0 0 0 var(--px) var(--grey);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--pixel-en);font-size:7px;color:var(--grey);
+}
+.item__cover img{width:100%;height:100%;object-fit:cover}
+.item__t{display:block;font-weight:800;font-size:15px;line-height:1.45}
+.item__s{display:block;font-size:11px;color:var(--grey);margin-top:5px}
+
+/* ── 日記 ─────────────────────────────────── */
+.about{background:var(--navy-2);padding:24px 20px;box-shadow:0 0 0 var(--px) var(--navy-3)}
+.about[hidden]{display:none}
+.about h2{margin:0 0 16px;font-size:17px;font-weight:900;letter-spacing:.06em}
+.about p{margin:0 0 18px;font-size:14.5px;line-height:2.15;color:#e6e6f5}
+.about p:last-of-type{margin-bottom:0}
+/* 落款用中文字體 —— 用像素英文字會把「2025/2/20」放大成一整排,跟旁邊的中文對不齊 */
+.about__sig{
+  margin-top:20px;text-align:right;color:var(--grey);
+  font-size:12px;letter-spacing:.06em;
+}
+
+.foot{
+  margin-top:52px;text-align:center;
+  font-family:var(--pixel-en);font-size:8px;color:var(--grey);letter-spacing:.16em;
+}
+</style>
+</head>
+<body>
+
+<div class="marquee" id="marquee" hidden><div class="marquee__track" id="marqueeTrack"></div></div>
+
+<div class="wrap" id="wrap" data-ready="0">
+
+  <header class="top">
+    <img class="top__avatar" id="avatar" alt="" hidden>
+    <h1 class="top__name" id="name">陳則皞</h1>
+    <p class="top__tag" id="tagline"></p>
+    <nav class="socials" id="socials" aria-label="社群連結"></nav>
+  </header>
+
+  <a class="btn blk" id="podcastBtn" href="#" target="_blank" rel="noopener" hidden></a>
+  <a class="btn btn--red" id="mailBtn" href="#" target="_blank" rel="noopener" hidden></a>
+
+  <section class="blk">
+    <p class="label" id="itemsLabel" hidden></p>
+    <div class="items" id="itemsList"></div>
+  </section>
+
+  <section class="about blk" id="about" hidden>
+    <h2 id="aboutTitle"></h2>
+    <div id="aboutBody"></div>
+    <p class="about__sig" id="aboutSig"></p>
+  </section>
+
+  <a class="btn" id="extraBtn" href="#" target="_blank" rel="noopener" hidden></a>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const on = v => v === true || v === 'true';        // content.json 兩種寫法都吃
+const txt = (id,v) => { const e=$(id); if(e) e.textContent = v||''; };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* 按鈕出現的條件:enabled 為真 **而且** 有網址。
+   少了後面那半,後台把網址清空就會留一顆點了沒反應的按鈕。 */
+function bigBtn(id, cfg){
+  const e = $(id);
+  const show = cfg && on(cfg.enabled) && cfg.url;
+  if (!show){ e.hidden = true; return; }
+  e.hidden = false; e.href = cfg.url;
+  e.innerHTML = esc(cfg.buttonText || cfg.title || '') +
+                (cfg.desc ? `<small>${esc(cfg.desc)}</small>` : '');
+}
+
+function renderMarquee(m){
+  const el=$('marquee'), track=$('marqueeTrack');
+  let items = m && m.items;
+  if (typeof items === 'string') items = items.split(/\r?\n/);
+  items = (Array.isArray(items)?items:[]).map(s=>String(s||'').trim()).filter(Boolean);
+  if (!m || !on(m.enabled) || !items.length){ el.hidden = true; return; }
+  const one = items.join('　　◆　　') + '　　◆　　';
+  track.textContent = one + one;                   // 接兩份,捲到底不會留一段白
+  track.style.setProperty('--marquee-speed',(Number(m.speed)||26)+'s');
+  el.hidden = false;
+}
+
+function render(c){
+  const meta = c.meta||{};
+  document.title = meta.title || '陳則皞';
+  txt('name', meta.title || '陳則皞');
+  txt('tagline', meta.tagline);
+  if (meta.avatar){ $('avatar').src = meta.avatar; $('avatar').hidden = false; }
+
+  renderMarquee(c.marquee);
+
+  $('socials').innerHTML = (c.socials||[]).filter(s=>s&&s.url).map(s=>
+    `<a class="social" href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`).join('');
+
+  bigBtn('podcastBtn', c.podcast);
+  bigBtn('mailBtn',    c.newsletter);
+  bigBtn('extraBtn',   c.extra);
+
+  const r = c.releases||{};
+  const showItems = on(r.enabled) && (r.items||[]).some(i=>i&&i.url);
+  $('itemsLabel').hidden = !(showItems && r.title);
+  txt('itemsLabel', r.title);
+  $('itemsList').innerHTML = !showItems ? '' : (r.items||[]).filter(i=>i&&i.url).map(i=>`
+    <a class="item" href="${esc(i.url)}" target="_blank" rel="noopener">
+      <span class="item__cover">${i.cover?`<img src="${esc(i.cover)}" alt="">`:'NO IMG'}</span>
+      <span><span class="item__t">${esc(i.title)}</span><span class="item__s">${esc(i.sub)}</span></span>
+    </a>`).join('');
+
+  const a = c.about||{};
+  $('about').hidden = !(on(a.enabled) && a.body);
+  txt('aboutTitle', a.title); txt('aboutSig', a.signature);
+  $('aboutBody').innerHTML = String(a.body||'').split(/\n{2,}/)
+    .map(par=>`<p>${esc(par).replace(/\n/g,'<br>')}</p>`).join('');
+
+  txt('foot', (c.footer&&c.footer.text)||'');
+  $('wrap').dataset.ready = '1';
+}
+
+fetch('content.json?t='+Date.now()).then(r=>r.json()).then(render).catch(err=>{
+  console.error(err);
+  $('wrap').dataset.ready='1';                     // 讀不到也別留白畫面
+  txt('tagline','內容載入失敗,請重新整理');
+});
+</script>
+</body>
+</html>
