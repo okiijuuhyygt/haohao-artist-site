@@ -49,6 +49,11 @@
     "formField": "entry.1488140464",
     "url": ""
   },
+  "spotify": {
+    "enabled": "true",
+    "title": "最近在聽",
+    "url": "https://open.spotify.com/playlist/65xMw1SZEmZb7sVco0L7KD"
+  },
   "video": {
     "enabled": "true",
     "title": "周邊介紹",

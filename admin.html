@@ -139,6 +139,14 @@ button.small{padding:7px 12px;font-size:12px}
   </div>
 
   <div class="card">
+    <h2>Spotify 歌單</h2>
+    <p class="hint">貼 Spotify 的分享網址就好(歌單／專輯／單曲都行,整條貼,後面那串 ?si= 不用刪)。顯示在「嵌入影片」上面。</p>
+    <div class="switch"><input type="checkbox" id="sp_on"><label for="sp_on" style="margin:0">顯示</label></div>
+    <label>小標</label><input id="sp_title">
+    <label>Spotify 網址</label><input id="sp_url" placeholder="https://open.spotify.com/playlist/...">
+  </div>
+
+  <div class="card">
     <h2>嵌入影片</h2>
     <p class="hint">貼 YouTube 網址就好(整條貼,不用挑 ID)。顯示在「專輯／吊飾」上面。</p>
     <div class="switch"><input type="checkbox" id="vd_on"><label for="vd_on" style="margin:0">顯示</label></div>
@@ -267,6 +275,7 @@ function fill(){
   val('nl_submit', d.newsletter?.submitText); val('nl_thanks', d.newsletter?.thanks);
   val('nl_action', d.newsletter?.formAction); val('nl_field', d.newsletter?.formField); val('nl_url', d.newsletter?.url);
 
+  chk('sp_on', d.spotify?.enabled); val('sp_title', d.spotify?.title); val('sp_url', d.spotify?.url);
   chk('vd_on', d.video?.enabled); val('vd_title', d.video?.title); val('vd_id', d.video?.youtubeId);
   chk('rl_on', d.releases?.enabled); val('rl_title', d.releases?.title);
   renderItems(d.releases?.items||[]);
@@ -360,6 +369,7 @@ $('saveBtn').onclick = async () => {
     newsletter:{ enabled:String($('nl_on').checked), buttonText:$('nl_text').value.trim(), desc:$('nl_desc').value.trim(),
                  submitText:$('nl_submit').value.trim(), thanks:$('nl_thanks').value.trim(),
                  formAction:$('nl_action').value.trim(), formField:$('nl_field').value.trim(), url:$('nl_url').value.trim() },
+    spotify:{ enabled:String($('sp_on').checked), title:$('sp_title').value.trim(), url:$('sp_url').value.trim() },
     video:{ enabled:String($('vd_on').checked), title:$('vd_title').value.trim(), youtubeId:$('vd_id').value.trim() },
     releases:{ enabled:String($('rl_on').checked), title:$('rl_title').value.trim(), items:collectItems() },
     about:{ enabled:String($('ab_on').checked), title:$('ab_title').value.trim(), body:$('ab_body').value, signature:$('ab_sig').value.trim() },

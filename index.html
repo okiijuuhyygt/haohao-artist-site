@@ -191,6 +191,27 @@ img{max-width:100%;display:block}
 }
 .video__frame iframe{width:100%;height:100%;display:block;border:0}
 
+/* ── Spotify 歌單 ─────────────────────────────
+   2026-08-09 耗耗:「我要它是圓角的,如果直接鑲嵌進去會變成方角,很醜」
+   🔑 iframe 自己不吃 border-radius —— 圓角要做在**外面那層**,
+      再用 overflow:hidden 把方角的 iframe 切圓。官網 .showcase__player 就是這樣做的,
+      這裡照它的版型搬(border + radius + 硬邊位移陰影),只把顏色換成這個站的色票。 */
+.spotify{margin-top:34px}
+.spotify[hidden]{display:none}
+.spotify__t{
+  font-family:var(--pixel-tc);font-size:13px;letter-spacing:.16em;color:var(--ink-mute);
+  text-align:center;margin:0 0 14px;
+}
+.spotify__frame{
+  border:3px solid var(--ink);
+  background:var(--ink);
+  box-shadow:6px 6px 0 var(--paper-edge);
+  border-radius:12px;
+  overflow:hidden;      /* ← 沒有這行,圓角切不掉 iframe 的方角 */
+  line-height:0;        /* ← 沒有這行,iframe 下面會多一條縫 */
+}
+.spotify__frame iframe{width:100%;display:block;border:0}
+
 /* ── 吊飾卡 ───────────────────────────────── */
 .items{display:grid;gap:12px}
 .item{
@@ -264,6 +285,11 @@ img{max-width:100%;display:block}
   </section>
   <a class="btn" id="mailBtn" href="#" target="_blank" rel="noopener" hidden></a>
   <iframe name="mailSink" style="display:none" title="submit sink"></iframe>
+
+  <section class="spotify" id="spotify" hidden>
+    <p class="spotify__t" id="spotifyTitle"></p>
+    <div class="spotify__frame" id="spotifyFrame"></div>
+  </section>
 
   <section class="video" id="video" hidden>
     <p class="video__t" id="videoTitle"></p>
@@ -363,6 +389,28 @@ function renderVideo(v){
       allowfullscreen></iframe>`;
 }
 
+/* Spotify 網址 → 嵌入用的 {type, id}。
+   吃得下:完整網址(含 ?si= 之類的追蹤參數)、spotify:playlist:xxx、或只給一個 ID。 */
+function spEmbed(s){
+  if(!s) return '';
+  const m = String(s).match(/(playlist|album|track|artist|episode|show)[\/:]([A-Za-z0-9]{22})/);
+  if(m) return `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0`;
+  return /^[A-Za-z0-9]{22}$/.test(s)
+    ? `https://open.spotify.com/embed/playlist/${s}?utm_source=generator&theme=0` : '';
+}
+function renderSpotify(v){
+  const box = $('spotify'), url = spEmbed(v && v.url);
+  if(!v || !on(v.enabled) || !url){ box.hidden = true; return; }
+  box.hidden = false;
+  txt('spotifyTitle', v.title);
+  // 歌單/專輯要高一點才看得到清單,單曲一格就夠
+  const h = /\/(track|episode)\//.test(url) ? 152 : 380;
+  $('spotifyFrame').innerHTML =
+    `<iframe src="${esc(url)}" height="${h}" loading="lazy"
+      title="${esc(v.title||'Spotify')}"
+      allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>`;
+}
+
 function render(c){
   const meta = c.meta||{};
   document.title = meta.title || '陳則皞';
@@ -379,6 +427,7 @@ function render(c){
 
   bigBtn('podcastBtn', c.podcast);
   renderMail(c.newsletter);
+  renderSpotify(c.spotify);
   renderVideo(c.video);
   bigBtn('extraBtn', c.extra);
 
