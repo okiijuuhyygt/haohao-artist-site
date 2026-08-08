@@ -2,15 +2,13 @@
   "meta": {
     "title": "陳則皞",
     "tagline": "暫時陪伴你走過一段小日子",
-    "avatar": "assets/avatar.png",
-    "barRight": "HAOHAO.UNZIP"
+    "avatar": "assets/avatar.png"
   },
   "marquee": {
     "enabled": "true",
     "speed": 26,
     "items": [
-      "haohao.unzip podcast 上線了　各大平台收聽中",
-      "暫時陪伴你走過一段小日子"
+      "當你摸羊摸到一半，楊開心，你突然離開，問題來了，要摸到什麼程度才不是一半呢？摸到他燒起來嗎ᕕ ( ᐛ ) ᕗ"
     ]
   },
   "socials": [
@@ -93,6 +91,6 @@
     "url": ""
   },
   "footer": {
-    "text": "© 陳則皞"
+    "text": "© 陳則皞 2026"
   }
 }
