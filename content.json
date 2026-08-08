@@ -2,7 +2,7 @@
   "meta": {
     "title": "陳則皞",
     "tagline": "暫時陪伴你走過一段小日子",
-    "avatar": "",
+    "avatar": "assets/avatar.png",
     "barRight": "HAOHAO.UNZIP"
   },
   "marquee": {
@@ -58,19 +58,19 @@
       {
         "title": "土豆麵筋",
         "sub": "可以聽的專輯吊飾",
-        "cover": "",
+        "cover": "assets/cover-doudou.png",
         "url": "https://forms.gle/ePeu46PXqdLs1TuR9"
       },
       {
         "title": "於是乎我忘了前奏",
         "sub": "可以聽的專輯吊飾",
-        "cover": "",
+        "cover": "assets/cover-qianzou.png",
         "url": "https://forms.gle/JFUgQb7ZauhtnCYUA"
       },
       {
         "title": "我的愛人已經是別人的愛人了",
         "sub": "可以聽的專輯吊飾",
-        "cover": "",
+        "cover": "assets/cover-airen.png",
         "url": "https://forms.gle/F2JgG58AGzsfCiwz7"
       }
     ]

@@ -58,7 +58,10 @@ body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
   background-image:repeating-linear-gradient(0deg,rgba(42,31,18,.03) 0 1px,transparent 1px 4px);
 }
-img{max-width:100%;display:block;image-rendering:pixelated}
+/* 🩸 不要在這裡加 image-rendering:pixelated —— 耗耗 2026-08-09 03:29 明講
+   「那四張圖不要像素畫」。他給的是真的專輯封面跟真的照片,
+   加了那行瀏覽器縮圖時會把它們弄得很粗糙。像素感靠字體跟邊框做,不靠圖。 */
+img{max-width:100%;display:block}
 
 /* ── 跑馬燈(黃銅底,沿用官網)────────────────── */
 .marquee{
