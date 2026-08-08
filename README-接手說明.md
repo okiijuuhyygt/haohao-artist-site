@@ -207,3 +207,16 @@ python3 -m fontTools.subset <fusion-pixel-12px-proportional-zh_hant.ttf.woff2> \
 Cubic 11 那顆 **ttf 是 2.7 MB 沒壓縮**。如果把整站字型換成 Fusion Pixel 的
 「站上字 + Cubic 11 全部涵蓋範圍」subset,只要 **337 KB woff2** —— 覆蓋更廣、頁面輕 8 倍。
 但那是**動到他看過並認可的整體視覺**,要他點頭才做。
+
+## ⚠️ 改完 `admin.html` 之後,要給他帶 `?v=` 的連結(2026-08-09 踩到)
+
+GitHub Pages 對 HTML 送的是 `Cache-Control: max-age=600` —— **他手機上開著的後台會吃十分鐘左右的舊檔,
+單純重整不一定換得掉。** 2026-08-09 就發生過:Spotify 那張卡我做好也上線了,
+他回「後台也要有格子啊」,實際上卡片就在上面,只是他拿到的是舊的那份。
+
+**→ 每次改完 `admin.html`,回報時附一個帶版本參數的連結**,例如:
+`https://haohao.mralleys.com/admin.html?v=2`(數字換一個沒用過的就行)。
+他點一下就拿到新的,**密碼不用重打**(登入狀態存在 localStorage,不受網址參數影響)。
+
+📌 這條對 `index.html` 也成立,只是首頁他通常不會開著不動,比較少中。
+📌 想根治只有兩條路:自己託管(可設 header)或在後台加版本字串自檢 —— **都還沒做,現在靠這個習慣擋。**
