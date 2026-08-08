@@ -181,6 +181,7 @@ button.small{padding:7px 12px;font-size:12px}
 
 <div class="bar" id="bar" style="display:none">
   <span class="status" id="status"></span>
+  <button class="ghost" id="homeBtn" type="button">← 回首頁</button>
   <button class="ghost" id="reloadBtn" type="button">重新讀取</button>
   <button id="saveBtn" type="button">儲存</button>
   <button class="ghost" id="logoutBtn" type="button">登出</button>
@@ -377,7 +378,19 @@ $('saveBtn').onclick = async () => {
   });
   if(!r.ok){ say('儲存失敗:'+r.status+'(可以按「重新讀取」再試一次)','err'); return; }
   DATA = out; SHA = (await r.json()).content.sha;
+  DIRTY = false;                       // 存好了 → 「回首頁」就不用再問一次
   say('存好了。網站大約一分鐘後更新。','ok');
+};
+
+/* ── 回首頁(2026-08-09 耗耗:「應該要有一個按鈕可以讓我回到首頁,我不用登出啊」)──
+   登出會清掉密碼、下次還要再打一次;他要的只是「離開這頁去看網站」,兩件事不一樣。
+   ⚠️ 但直接跳走會把沒存的修改弄丟 → 有改過就先問一句。改完存好就不問。 */
+let DIRTY = false;
+document.getElementById('app').addEventListener('input',  () => { DIRTY = true; });
+document.getElementById('app').addEventListener('change', () => { DIRTY = true; });
+$('homeBtn').onclick = () => {
+  if (DIRTY && !confirm('還有改過的地方沒有按「儲存」,現在離開會不見。確定要回首頁嗎?')) return;
+  location.href = './';           // 密碼留著,回來不用重打
 };
 
 /* 已經登入過就直接進去 */
