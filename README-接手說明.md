@@ -166,3 +166,44 @@ Value : okiijuuhyygt.github.io.        TTL: Automatic
 ⚠️ **刪完一定要再送一筆測試** —— 我驗過了,`entry.1488140464` 沒被改掉、還是 200。
 　 (刪題目理論上不動別題的 entry id,但那是「理論上」。)
 ⚠️ 回覆裡有兩筆我送的測試(`xiaoyou-test-*@example.com`),耗耗可自行刪。
+
+---
+
+## 🔤 字型:為什麼名字用的是另一套(2026-08-09 04:5x)
+
+耗耗抓到大標題「陳則皞」的**皞跟旁邊兩個字不同掛**。原因不是排版:
+
+**`Cubic 11` 的字表裡沒有 U+769E(皞)。** 實查:陳 ✅ / 則 ✅ / 皞 ❌
+(用 PIL 畫出來跟私用區的豆腐框一模一樣)。缺字時瀏覽器會**只針對那一個字**去抓別套字補,
+所以三個字裡有一個長得不一樣。
+
+### 修法:換一套「有那個字的像素字型」,不是換成非像素字
+`Fusion Pixel 12px` 的繁中集**本來就是拿 Cubic 11 縫出來的**,字形幾乎一致,但收了 36,518 字。
+→ 像素感一點都沒掉(耗耗兩次打回版本在乎的就是這個)。
+
+- 檔案:`assets/fusion-pixel-12px-tc-subset.woff2`(**22 KB**;完整版 904 KB,不必扛)
+- 只 subset **站上真的用到的 594 字**(content.json + index.html + admin.html 的全部字元 + ASCII + 常用標點)
+- CSS 變數 `--pixel-name`,**只掛在 `.top__name` 跟 `.bar__l`**,其他地方維持 `--pixel-tc`(Cubic 11)
+- Cubic 11 留在 stack 第二順位 → subset 沒收到的字照樣是像素字,不會掉回黑體
+
+### ⚠️ 改名字的時候要注意
+h1 的文字來自 `content.json` 的 `meta.title`。**後台改成別的字,如果那個字不在那 594 個裡,
+會退回 Cubic 11** —— 不會壞,但可能又出現「一個字不同掛」。
+要重新 subset:
+```bash
+# 1) 抓站上所有字元 → subset-chars.txt   2) 用完整版字型重切
+python3 -m fontTools.subset <fusion-pixel-12px-proportional-zh_hant.ttf.woff2> \
+  --text-file=subset-chars.txt --flavor=woff2 --layout-features='*' \
+  --output-file=assets/fusion-pixel-12px-tc-subset.woff2
+```
+完整版:`gh release download --repo TakWolf/fusion-pixel-font --pattern "*12px-proportional-ttf.woff2-*.zip"`
+
+### 🩸 驗收踩到的坑
+**`document.fonts.check('48px "Cubic 11"', '皞')` 會回 `true`** —— 它測的是「這套字載入了沒」,
+**不是「這套字有沒有這個字形」**。拿它當證據會得到一個假的綠燈。
+**唯一可信的驗法是把畫面裁出來放大用眼睛看**(或用 PIL 量墨量 + 跟私用區豆腐框比對)。
+
+### 💡 還沒做、可以考慮的(耗耗還沒點頭,不要自己動)
+Cubic 11 那顆 **ttf 是 2.7 MB 沒壓縮**。如果把整站字型換成 Fusion Pixel 的
+「站上字 + Cubic 11 全部涵蓋範圍」subset,只要 **337 KB woff2** —— 覆蓋更廣、頁面輕 8 倍。
+但那是**動到他看過並認可的整體視覺**,要他點頭才做。
