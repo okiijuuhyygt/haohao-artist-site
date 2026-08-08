@@ -14,8 +14,8 @@
         變數名叫 token 沒關係(那是 code,不是畫面)。
    ========================================================= */
 :root{
-  --navy:#0b0b2b;--navy-2:#16163f;--navy-3:#2a2a63;
-  --red:#e52521;--yellow:#fbd000;--white:#fcfcfc;--grey:#9a9ab5;--green:#3ad07a;
+  --navy:#f3ead4;--navy-2:#ede2c4;--navy-3:#c9b88c;
+  --red:#b83a2a;--yellow:#b8801f;--white:#2a1f12;--grey:#8a7556;--green:#4a8b3a;
   --cjk:'PingFang TC','Noto Sans TC',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
@@ -36,10 +36,10 @@ input:focus,textarea:focus{outline:0;box-shadow:0 0 0 2px var(--yellow)}
 textarea{resize:vertical;min-height:88px;line-height:1.85}
 button{
   font:inherit;font-weight:800;cursor:pointer;border:0;padding:12px 18px;
-  background:var(--yellow);color:var(--navy);box-shadow:0 4px 0 0 #8a7200;
+  background:var(--yellow);color:#f3ead4;box-shadow:3px 3px 0 var(--white);
 }
 button:active{transform:translateY(4px);box-shadow:none}
-button.ghost{background:var(--navy-3);color:var(--white);box-shadow:0 4px 0 0 #05051a}
+button.ghost{background:var(--navy-2);color:var(--white);box-shadow:0 4px 0 0 #05051a}
 button.small{padding:7px 12px;font-size:12px}
 .msg{font-size:13px;margin-top:12px;min-height:20px}
 .msg.err{color:var(--red)} .msg.ok{color:var(--green)}
@@ -120,14 +120,22 @@ button.small{padding:7px 12px;font-size:12px}
   </div>
 
   <div class="card">
-    <h2>電子報按鈕</h2>
-    <p class="hint">🔴 Portaly 那顆是他們家內建的功能,搬不過來。這裡要放一個你自己的收信表單(Google 表單 / Kit / Tally 都可以)。網址空著這顆按鈕就不會出現。</p>
+    <h2>電子報</h2>
+    <p class="hint">兩種做法,填哪個就走哪個:<br>
+      ① <b>頁面內直接填 email</b>(推薦,人不用跳走)→ 填下面「收信網址」跟「欄位代號」<br>
+      ② <b>跳到別的頁面</b> → 只填最下面的「外部網址」</p>
     <div class="switch"><input type="checkbox" id="nl_on"><label for="nl_on" style="margin:0">顯示</label></div>
     <div class="row">
-      <div><label>按鈕文字</label><input id="nl_text"></div>
+      <div><label>標題／按鈕文字</label><input id="nl_text"></div>
       <div><label>小字說明</label><input id="nl_desc"></div>
     </div>
-    <label>網址</label><input id="nl_url">
+    <div class="row">
+      <div><label>送出鈕文字</label><input id="nl_submit" placeholder="訂閱"></div>
+      <div><label>送出後顯示的話</label><input id="nl_thanks" placeholder="收到了，謝謝你 ✉"></div>
+    </div>
+    <label>① 收信網址(表單的 POST 網址)</label><input id="nl_action" placeholder="https://…">
+    <label>① 欄位代號(email 那格的 name)</label><input id="nl_field" placeholder="email 或 entry.123456">
+    <label>② 外部網址(填了①就不會用到這個)</label><input id="nl_url">
   </div>
 
   <div class="card">
@@ -246,7 +254,9 @@ function fill(){
   });
 
   chk('pc_on', d.podcast?.enabled); val('pc_text', d.podcast?.buttonText); val('pc_desc', d.podcast?.desc); val('pc_url', d.podcast?.url);
-  chk('nl_on', d.newsletter?.enabled); val('nl_text', d.newsletter?.buttonText); val('nl_desc', d.newsletter?.desc); val('nl_url', d.newsletter?.url);
+  chk('nl_on', d.newsletter?.enabled); val('nl_text', d.newsletter?.buttonText); val('nl_desc', d.newsletter?.desc);
+  val('nl_submit', d.newsletter?.submitText); val('nl_thanks', d.newsletter?.thanks);
+  val('nl_action', d.newsletter?.formAction); val('nl_field', d.newsletter?.formField); val('nl_url', d.newsletter?.url);
 
   chk('rl_on', d.releases?.enabled); val('rl_title', d.releases?.title);
   renderItems(d.releases?.items||[]);
@@ -337,7 +347,9 @@ $('saveBtn').onclick = async () => {
               items:$('mq_items').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean) },
     socials,
     podcast:{ enabled:String($('pc_on').checked), buttonText:$('pc_text').value.trim(), desc:$('pc_desc').value.trim(), url:$('pc_url').value.trim() },
-    newsletter:{ enabled:String($('nl_on').checked), buttonText:$('nl_text').value.trim(), desc:$('nl_desc').value.trim(), url:$('nl_url').value.trim() },
+    newsletter:{ enabled:String($('nl_on').checked), buttonText:$('nl_text').value.trim(), desc:$('nl_desc').value.trim(),
+                 submitText:$('nl_submit').value.trim(), thanks:$('nl_thanks').value.trim(),
+                 formAction:$('nl_action').value.trim(), formField:$('nl_field').value.trim(), url:$('nl_url').value.trim() },
     releases:{ enabled:String($('rl_on').checked), title:$('rl_title').value.trim(), items:collectItems() },
     about:{ enabled:String($('ab_on').checked), title:$('ab_title').value.trim(), body:$('ab_body').value, signature:$('ab_sig').value.trim() },
     extra:{ enabled:String($('ex_on').checked), buttonText:$('ex_text').value.trim(), desc:$('ex_desc').value.trim(), url:$('ex_url').value.trim() },
