@@ -246,7 +246,12 @@ img{max-width:100%;display:block}
   box-shadow:var(--px) var(--px) 0 var(--ink),0 0 0 2px var(--ink);
 }
 .about[hidden]{display:none}
-.about h2{font-family:var(--pixel-tc);margin:0 0 14px;font-size:19px;font-weight:400;letter-spacing:.05em}
+/* 2026-08-09 標題從像素字換成一般字(耗耗:「算了算了,這個還是換一個」)。
+   原則:**像素字負責介面(按鈕/跑馬燈/狀態列/小標籤),一般字負責內容(名字/標題/內文)。**
+   像素字一放大就會露出缺字跟不平衡,而標題是要讓人讀的東西。
+   層級靠**大小 + 字重**分,不靠換字體 —— 名字 48px/600、標題 20px/600、內文 14.5px/400,
+   三個都是 --ink-soft,所以是同一個聲音的三種音量,不是三個人在講話。 */
+.about h2{font-family:var(--name-face);margin:0 0 14px;font-size:20px;font-weight:600;letter-spacing:.04em;color:var(--ink-soft)}
 .about p{margin:0 0 18px;font-size:14.5px;line-height:2.1;color:var(--ink-soft)}
 .about p:last-of-type{margin-bottom:0}
 .about__sig{margin-top:20px;text-align:right;color:var(--ink-mute);font-size:12px}
