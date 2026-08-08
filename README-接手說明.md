@@ -124,3 +124,45 @@ gh api -X POST repos/okiijuuhyygt/haohao-artist-site/pages \
 ⚠️ **一個字不一樣,還沒問他**:封面上印的是「我的**戀**人已經是別人的**戀**人了」,
 但 Portaly 跟現在網站上寫的是「我的**愛**人已經是別人的**愛**人了」。
 **目前照 Portaly 的「愛」**,等他裁示。
+
+---
+
+## 📦 2026-08-09 03:4x 上線進度
+
+✅ repo:`github.com/okiijuuhyygt/haohao-artist-site`(public,已推)
+✅ GitHub Pages:已啟用,`status=built`,`cname=haohao.mralleys.com`
+🔴 **DNS 那筆還沒加** —— 這是唯一擋著的東西。要加的是:
+
+```
+Type  : CNAME Record      Host: haohao
+Value : okiijuuhyygt.github.io.        TTL: Automatic
+```
+在 Namecheap → Domain List → mralleys.com → Advanced DNS。
+⚠️ **只新增,不要動現有的列**(`play` 跟 `www` 都在同一張表)。
+
+### 🩸 為什麼我沒自己加:Namecheap 登不進去
+
+帳密在 `~/.openclaw/secrets/namecheap.txt`(無 2FA),我寫了
+`scripts/namecheap/nc-login.js` 去登 —— **刻意寫成腳本從檔案讀密碼,
+這樣密碼不會出現在對話紀錄裡。以後任何要打耗耗密碼的事都照這個做法。**
+
+兩個實測到的坑(腳本裡都寫了註解):
+- `/myaccount/login/` 那頁的帳密欄位是**藏起來的**,要帶 `?ReturnUrl=…` 進去才展開
+- 頁面上有**兩個** `LoginUserName`(右上下拉選單裡還有一個,隱藏的)→ 要用 `:visible` 挑
+
+**過不去的是最後一關**:帳密都填進去了(截圖 `work/nc-2-after-login.png` 看得到),
+但 Sign in 鈕維持灰色、按 Enter 也不送出。`fill()` 換成 `pressSequentially()` 逐字敲也一樣。
+→ **判斷是他們家的機器人偵測,不再硬闖。** 已經把那筆記錄給耗耗自己加。
+
+## 📮 電子報:通了,而且驗過兩次
+
+耗耗自己開了表單並給我編輯權。
+- 表單:`docs.google.com/forms/d/11-YFo1bk73_kiD20_QOaHi-3_hl0SAtF1Fow7EqfxeU/edit`
+- 送出網址:`.../forms/d/e/1FAIpQLSfCc_Mzr8onuk3LdeLt8jANVdJJaPiB2L-6gB-4YlGXg1FAbw/formResponse`
+- 欄位:`entry.1488140464`
+
+🩸 他一開始開的是 Google 內建英文範本「Tech Insights Weekly Newsletter」(六題)。
+**已改名成「陳則皞 電子報」+ 刪掉五題,只留 Email Address**(耗耗 03:38 指示)。
+⚠️ **刪完一定要再送一筆測試** —— 我驗過了,`entry.1488140464` 沒被改掉、還是 200。
+　 (刪題目理論上不動別題的 entry id,但那是「理論上」。)
+⚠️ 回覆裡有兩筆我送的測試(`xiaoyou-test-*@example.com`),耗耗可自行刪。
