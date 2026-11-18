@@ -62,6 +62,17 @@ button.small{padding:7px 12px;font-size:12px}
   display:flex;gap:12px;align-items:center;justify-content:flex-end;
 }
 .bar .status{margin-right:auto;font-size:13px;color:var(--grey)}
+
+/* 訪客數（2026-11-19）：讀同站的 stats.json，每天早上 GitHub Actions 自動更新。前台不顯示。 */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.stat{background:var(--navy);box-shadow:0 0 0 2px var(--navy-3);padding:12px 14px}
+.stat b{display:block;font-size:28px;line-height:1.2;letter-spacing:.02em}
+.stat span{font-size:12px;color:var(--grey)}
+.stat-t{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+.stat-t th{font-weight:400;color:var(--grey);font-size:12px;text-align:right;padding:4px 0 6px}
+.stat-t th:first-child,.stat-t td:first-child{text-align:left}
+.stat-t td{padding:7px 0;border-top:1px solid var(--navy-3);text-align:right;font-variant-numeric:tabular-nums}
+.stat-t td+td,.stat-t th+th{width:64px}
 </style>
 </head>
 <body>
@@ -80,6 +91,12 @@ button.small{padding:7px 12px;font-size:12px}
 <div id="app"><div class="wrap">
   <h1>網站內容</h1>
   <p class="sub">改完按右下角「儲存」,網站大約一分鐘後會更新。</p>
+
+  <div class="card" id="statsCard">
+    <h2>訪客數</h2>
+    <p class="hint" id="statsHint">讀取中…</p>
+    <div id="statsBody"></div>
+  </div>
 
   <div class="card">
     <h2>基本</h2>
@@ -171,8 +188,8 @@ button.small{padding:7px 12px;font-size:12px}
   </div>
 
   <div class="card">
-    <h2>額外按鈕(預留)</h2>
-    <p class="hint">以後要掛遊戲入口或別的東西時用這個。平常關著。</p>
+    <h2>找我做歌（圓形按鈕）</h2>
+    <p class="hint">社群按鈕下面那顆紅色圓鈕（像遊戲機的 A 鍵）。按鈕文字在圓裡，小字在圓的下面。關掉＝整顆不出現。</p>
     <div class="switch"><input type="checkbox" id="ex_on"><label for="ex_on" style="margin:0">顯示</label></div>
     <div class="row">
       <div><label>按鈕文字</label><input id="ex_text"></div>
@@ -402,6 +419,26 @@ $('homeBtn').onclick = () => {
   if (DIRTY && !confirm('還有改過的地方沒有按「儲存」,現在離開會不見。確定要回首頁嗎?')) return;
   location.href = './';           // 密碼留著,回來不用重打
 };
+
+/* ── 訪客數（2026-11-19）──────────────────
+   stats.json 是 GitHub Actions（visitor-stats）每天早上自動寫的，這裡只負責顯示。
+   GoatCounter 只記「訪客」（同一人一段時間內只算一次），沒有瀏覽數，所以畫面只寫訪客。 */
+function md(d){ const m = String(d||'').match(/\d{4}-(\d{2})-(\d{2})/); return m ? (+m[1])+'/'+(+m[2]) : ''; }
+function renderStats(st){
+  const n = v => Number(v||0).toLocaleString('zh-TW');
+  $('statsHint').textContent = `每天早上自動更新。更新時間 ${st.updated_at||'—'}（算到 ${md(st.d7&&st.d7.to)} 為止的整天；這頁 2026/11/19 才開始記）`;
+  const tile = (w,label) => `<div class="stat"><b>${n(w&&w.visitors)}</b><span>${label}訪客（${md(w&&w.from)}–${md(w&&w.to)}）</span></div>`;
+  let h = `<div class="stats">${tile(st.d7,'近 7 天')}${tile(st.d30,'近 30 天')}</div>`;
+  const rows = (st.clicks||[]);
+  const extra = rows.find(r => r.key==='extra');
+  h += `<table class="stat-t"><tr><th>按鈕點擊</th><th>7 天</th><th>30 天</th></tr>`;
+  if (!extra) h += `<tr><td>找我做歌</td><td>0</td><td>0</td></tr>`;
+  rows.forEach(r => { h += `<tr><td>${String(r.name).replace(/[&<>]/g,'')}</td><td>${n(r.d7)}</td><td>${n(r.d30)}</td></tr>`; });
+  h += `</table>`;
+  $('statsBody').innerHTML = h;
+}
+fetch('stats.json?t='+Date.now()).then(r => { if(!r.ok) throw 0; return r.json(); }).then(renderStats)
+  .catch(() => { $('statsHint').textContent = '還沒有資料（每天早上會自動更新一次）'; });
 
 /* 已經登入過就直接進去 */
 if(localStorage.getItem(LS_KEY)) tryLogin(localStorage.getItem(LS_KEY));
