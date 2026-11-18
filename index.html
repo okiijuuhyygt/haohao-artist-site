@@ -164,6 +164,41 @@ img{max-width:100%;display:block}
 .btn--alt{background:var(--paper-soft);color:var(--ink)}
 .blk{margin-top:34px}
 
+/* ── 「找我做歌」圓鍵（content.json 的 extra）──────────────
+   2026-11-19 耗耗：從頁面最底下搬到社群列跟 podcast 那塊中間、置中，做成像遊戲機 A 鍵的圓形按鈕。
+   還是同一套皮膚：厚墨邊＋硬邊位移陰影＋按下去會凹（跟 .btn 一樣的 steps(1)）。
+   顏色用磚紅（後台本來就在用的 --red #b83a2a），比黃銅跳一點、有遊戲機 A 鍵的感覺，
+   但飽和度壓著，不會像廣告。旁邊那個小小的「A」是印在機身上的字，不是按鈕的一部分。
+   小字（extra.desc）放圓的下面；空的就不出現。 */
+.abtn{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  width:max-content;max-width:100%;margin:30px auto 0;
+  text-decoration:none;color:var(--ink);-webkit-tap-highlight-color:transparent;
+}
+.abtn[hidden]{display:none}
+.abtn__key{
+  position:relative;width:112px;height:112px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;
+  font-family:var(--pixel-tc);font-size:17px;line-height:1.35;letter-spacing:.06em;
+  color:var(--paper);background:#b83a2a;
+  box-shadow:var(--px) var(--px) 0 var(--ink),0 0 0 3px var(--ink),
+             inset -6px -6px 0 rgba(0,0,0,.2),inset 5px 5px 0 rgba(255,255,255,.22);
+  transition:transform .08s steps(1),box-shadow .08s steps(1);
+}
+.abtn__key::after{               /* 機身上印的「A」 */
+  content:'A';position:absolute;right:-20px;bottom:-4px;
+  font-family:var(--pixel-en);font-size:9px;color:var(--ink-mute);letter-spacing:0;
+}
+.abtn:hover .abtn__key{transform:translate(-1px,-1px)}
+.abtn:active .abtn__key{
+  transform:translate(3px,3px);
+  box-shadow:0 0 0 3px var(--ink),inset 6px 6px 0 rgba(0,0,0,.2);
+}
+.abtn:focus-visible{outline:0}
+.abtn:focus-visible .abtn__key{outline:2px dashed var(--brass-deep);outline-offset:6px}
+.abtn__sub{font-size:12px;color:var(--ink-soft);letter-spacing:.04em;text-align:center}
+.abtn__sub:empty{display:none}
+
 /* ── 段落小標 ─────────────────────────────── */
 .label{
   font-family:var(--pixel-tc);font-size:13px;letter-spacing:.16em;color:var(--ink-mute);
@@ -287,7 +322,13 @@ img{max-width:100%;display:block}
     <nav class="socials" id="socials" aria-label="社群連結"></nav>
   </header>
 
-  <a class="btn blk" id="podcastBtn" href="#" target="_blank" rel="noopener" hidden></a>
+  <!-- 「找我做歌」圓鍵＝content.json 的 extra（2026-11-19 從頁尾搬上來；最底下那顆已拿掉，是同一顆） -->
+  <a class="abtn" id="extraBtn" href="#" target="_blank" rel="noopener" data-gc="extra" hidden>
+    <span class="abtn__key" id="extraKey"></span>
+    <span class="abtn__sub" id="extraSub"></span>
+  </a>
+
+  <a class="btn blk" id="podcastBtn" href="#" target="_blank" rel="noopener" data-gc="podcast" hidden></a>
 
   <!-- 電子報:有 formAction 就內嵌表單,只有 url 就當一般按鈕 -->
   <section class="mail" id="mail" hidden>
@@ -299,7 +340,7 @@ img{max-width:100%;display:block}
     </form>
     <p class="mail__ok" id="mailOk"></p>
   </section>
-  <a class="btn" id="mailBtn" href="#" target="_blank" rel="noopener" hidden></a>
+  <a class="btn" id="mailBtn" href="#" target="_blank" rel="noopener" data-gc="mail" hidden></a>
   <iframe name="mailSink" style="display:none" title="submit sink"></iframe>
 
   <section class="spotify" id="spotify" hidden>
@@ -323,8 +364,6 @@ img{max-width:100%;display:block}
     <p class="about__sig" id="aboutSig"></p>
   </section>
 
-  <a class="btn btn--alt" id="extraBtn" href="#" target="_blank" rel="noopener" hidden></a>
-
   <p class="foot" id="foot"></p>
   <p style="text-align:center;margin:0"><a class="foot__admin" href="admin.html">系統登入</a></p>
 </div>
@@ -344,6 +383,16 @@ function bigBtn(id, cfg){
   e.hidden = false; e.href = cfg.url;
   e.innerHTML = esc(cfg.buttonText || cfg.title || '') +
                 (cfg.desc ? `<small>${esc(cfg.desc)}</small>` : '');
+}
+
+/* 「找我做歌」圓鍵：跟 bigBtn 同一條規則（開關打開**而且**有網址才出現），只是長相不同。 */
+function renderExtra(cfg){
+  const e = $('extraBtn');
+  const show = cfg && on(cfg.enabled) && cfg.url;
+  if (!show){ e.hidden = true; return; }
+  e.hidden = false; e.href = cfg.url;
+  txt('extraKey', cfg.buttonText || cfg.title || '找我做歌');
+  txt('extraSub', cfg.desc);
 }
 
 function renderMarquee(m){
@@ -439,20 +488,20 @@ function render(c){
   renderMarquee(c.marquee);
 
   $('socials').innerHTML = (c.socials||[]).filter(s=>s&&s.url).map(s=>
-    `<a class="social" href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`).join('');
+    `<a class="social" href="${esc(s.url)}" target="_blank" rel="noopener" data-gc="social-${esc(String(s.id||s.label||'').toLowerCase())}">${esc(s.label)}</a>`).join('');
 
   bigBtn('podcastBtn', c.podcast);
   renderMail(c.newsletter);
   renderSpotify(c.spotify);
   renderVideo(c.video);
-  bigBtn('extraBtn', c.extra);
+  renderExtra(c.extra);
 
   const r = c.releases||{};
   const showItems = on(r.enabled) && (r.items||[]).some(i=>i&&i.url);
   $('itemsLabel').hidden = !(showItems && r.title);
   txt('itemsLabel', r.title);
-  $('itemsList').innerHTML = !showItems ? '' : (r.items||[]).filter(i=>i&&i.url).map(i=>`
-    <a class="item" href="${esc(i.url)}" target="_blank" rel="noopener">
+  $('itemsList').innerHTML = !showItems ? '' : (r.items||[]).filter(i=>i&&i.url).map((i,n)=>`
+    <a class="item" href="${esc(i.url)}" target="_blank" rel="noopener" data-gc="release-${n+1}">
       <span class="item__cover">${i.cover?`<img src="${esc(i.cover)}" alt="">`:'NO IMG'}</span>
       <span><span class="item__t">${esc(i.title)}</span><span class="item__s">${esc(i.sub)}</span></span>
     </a>`).join('');
@@ -467,11 +516,35 @@ function render(c){
   $('wrap').dataset.ready = '1';
 }
 
+/* 按鈕點擊 → GoatCounter 事件 bio-click-<data-gc>（後台「訪客數」那塊會列）。
+   用事件委派：社群列跟吊飾卡是 content.json 讀進來之後才長出來的，一顆一顆綁會漏。 */
+function gcEvent(id, title){
+  const gc = window.goatcounter;
+  if (!gc || typeof gc.count !== 'function') return;
+  try { gc.count({ path:'bio-click-'+id, title:String(title||'').replace(/\s+/g,' ').trim().slice(0,80), event:true }); } catch(_){}
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('[data-gc]');
+  if (a) gcEvent(a.dataset.gc, a.textContent);
+}, true);
+document.addEventListener('submit', e => {
+  if (e.target && e.target.id === 'mailForm') gcEvent('mail-submit', '電子報訂閱送出');
+}, true);
+
 fetch('content.json?t='+Date.now()).then(r=>r.json()).then(render).catch(err=>{
   console.error(err);
   $('wrap').dataset.ready='1';                     // 讀不到也別留白畫面
   txt('tagline','內容載入失敗,請重新整理');
 });
 </script>
+
+<!-- GoatCounter 訪客追蹤（2026-11-19 加）→ 跟官網、發行頁同一個帳號 haohao.goatcounter.com，用 path 區分：
+     這頁一律記成 /bio 開頭（首頁＝/bio），不然會跟官網首頁的 / 混在一起。
+     path 只取網址路徑、丟掉 ? 後面那串（IG／FB 帶進來的追蹤參數會把同一頁拆成好幾條）。
+     按鈕點擊是事件 bio-click-*，不吃這個 path 設定（GoatCounter 有給 path 就不套 callback）。 -->
+<script>
+window.goatcounter = { path: function(p){ var q = String(p||'/').split('?')[0]; return q === '/' ? '/bio' : '/bio' + q; } };
+</script>
+<script data-goatcounter="https://haohao.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
