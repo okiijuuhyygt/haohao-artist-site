@@ -90,10 +90,10 @@
     "signature": "－寫於 2025/2/20 的日記"
   },
   "extra": {
-    "enabled": "false",
-    "buttonText": "",
-    "desc": "",
-    "url": ""
+    "enabled": "true",
+    "buttonText": "找我做歌",
+    "desc": "我也是製作人｜巷弄故事館",
+    "url": "https://mralleys.com/"
   },
   "footer": {
     "text": "© 陳則皞"
