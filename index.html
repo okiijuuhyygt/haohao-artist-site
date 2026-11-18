@@ -194,6 +194,9 @@ img{max-width:100%;display:block}
   transform:translate(3px,3px);
   box-shadow:0 0 0 3px var(--ink),inset 6px 6px 0 rgba(0,0,0,.2);
 }
+/* 手機點下去會馬上跳頁，:active 來不及顯示 → JS 在按下時加 .is-press，跳頁前停 140ms 讓凹下去看得到（2026-11-19 耗耗：IG 裡點沒有被壓下去的感覺） */
+.abtn.is-press .abtn__key{transform:translate(3px,3px);box-shadow:0 0 0 3px var(--ink),inset 6px 6px 0 rgba(0,0,0,.2)}
+.btn.is-press,.social.is-press,.item.is-press{transform:translate(3px,3px);box-shadow:0 0 0 2px var(--ink)}
 .abtn:focus-visible{outline:0}
 .abtn:focus-visible .abtn__key{outline:2px dashed var(--brass-deep);outline-offset:6px}
 .abtn__sub{font-size:12px;color:var(--ink-soft);letter-spacing:.04em;text-align:center}
@@ -515,6 +518,30 @@ function render(c){
   txt('foot', (c.footer&&c.footer.text)||'');
   $('wrap').dataset.ready = '1';
 }
+
+/* 按下去的手感（手機）：按下就凹；用手指點的連結延遲 140ms 再跳頁，凹的那一下才看得到。滑鼠點照舊開新分頁。 */
+(() => {
+  const SEL = '.abtn,.btn,.social,.item';
+  let lastType = 'mouse';
+  document.addEventListener('touchstart', () => {}, {passive: true});
+  document.addEventListener('pointerdown', e => {
+    lastType = e.pointerType || 'mouse';
+    const b = e.target.closest && e.target.closest(SEL);
+    if (b) b.classList.add('is-press');
+  });
+  const up = () => setTimeout(() => document.querySelectorAll('.is-press').forEach(x => x.classList.remove('is-press')), 140);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest(SEL);
+    if (!a || a.tagName !== 'A' || lastType !== 'touch') return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    e.preventDefault();
+    a.classList.add('is-press');
+    setTimeout(() => { location.href = href; }, 140);
+  });
+})();
 
 /* 按鈕點擊 → GoatCounter 事件 bio-click-<data-gc>（後台「訪客數」那塊會列）。
    用事件委派：社群列跟吊飾卡是 content.json 讀進來之後才長出來的，一顆一顆綁會漏。 */
