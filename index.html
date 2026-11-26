@@ -253,9 +253,9 @@ img{max-width:100%;display:block}
   transition:transform .06s steps(1),box-shadow .06s steps(1),filter .15s;
 }
 .social[data-gc="social-spotify"]{--bg:#3d8a52;--sh:#1e4529}
-.social[data-gc="social-threads"]{--bg:#3a2f24;--sh:var(--brass-deep)}
-.social[data-gc="social-instagram"]{--bg:#b04a6c;--sh:#5a2236}
-.social[data-gc="social-podcast"]{--bg:#7356a0;--sh:#382751}
+.social[data-gc="social-threads"]{--bg:#4a4744;--sh:#24221f}
+.social[data-gc="social-instagram"]{--bg:#8a5a3a;--sh:#45291a}
+.social[data-gc="social-podcast"]{--bg:#3f6aa3;--sh:#1e3454}
 .social:hover{transform:none;filter:brightness(1.08);
   box-shadow:inset -4px -4px 0 rgba(0,0,0,.2),inset 4px 4px 0 rgba(255,255,255,.22),
     4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink),
@@ -274,6 +274,9 @@ img{max-width:100%;display:block}
 .btn:active,.btn.is-press{transform:translate(4px,4px);
   box-shadow:inset 4px 4px 0 rgba(0,0,0,.18),4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink)}
 .mail__row .btn{margin:4px 8px 8px 4px;width:auto}
+
+/* 2026-11-26 13:57 耗耗：Instagram 咖啡、Podcast 藍、Threads 深灰；「找我做歌」改只寫「製作」、小字與機身「A」拿掉 */
+.abtn__key::after{content:none}
 
 /* ── 段落小標 ─────────────────────────────── */
 .label{
