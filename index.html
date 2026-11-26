@@ -238,6 +238,43 @@ img{max-width:100%;display:block}
 .abtn__sub{font-size:12px;color:var(--ink-soft);letter-spacing:.04em;text-align:center}
 .abtn__sub:empty{display:none}
 
+/* ── 2026-11-26 耗耗：「除了找我做歌，其他都沒有畫素感，Spotify／Threads／Instagram／Podcast 不像按鈕，照相同的那種給」
+   → 照巷弄官網首頁那套像素按鈕（四向 4px 墨框＝缺角的階梯角、右下 8px 階梯陰影、上亮下暗、按下去往右下凹）。
+   四顆社群各上平台色（他問「是不是應該要有其他顏色」，小悠拿捏）：都壓成跟紙色、磚紅同一個復古色溫的低飽和版，
+   不搶「找我做歌」那顆紅；字一律紙色。陰影色＝各自底色再深一階。 */
+.socials{gap:6px 4px}
+.social{
+  --bg:var(--paper-soft);--sh:var(--brass-deep);
+  font-size:10px;padding:12px 14px;margin:4px 8px 8px 4px;
+  color:var(--paper);background:var(--bg);-webkit-font-smoothing:none;
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.2),inset 4px 4px 0 rgba(255,255,255,.22),
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    8px 4px 0 var(--sh),4px 8px 0 var(--sh);
+  transition:transform .06s steps(1),box-shadow .06s steps(1),filter .15s;
+}
+.social[data-gc="social-spotify"]{--bg:#3d8a52;--sh:#1e4529}
+.social[data-gc="social-threads"]{--bg:#3a2f24;--sh:var(--brass-deep)}
+.social[data-gc="social-instagram"]{--bg:#b04a6c;--sh:#5a2236}
+.social[data-gc="social-podcast"]{--bg:#7356a0;--sh:#382751}
+.social:hover{transform:none;filter:brightness(1.08);
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.2),inset 4px 4px 0 rgba(255,255,255,.22),
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    8px 4px 0 var(--sh),4px 8px 0 var(--sh)}
+.social:active,.social.is-press{transform:translate(4px,4px);
+  box-shadow:inset 4px 4px 0 rgba(0,0,0,.2),4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink)}
+/* 大按鈕（haohao.unzip podcast、電子報）同一套 */
+.btn{
+  width:calc(100% - 12px);margin:16px 8px 8px 4px;
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.18),inset 4px 4px 0 rgba(255,255,255,.22),
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    8px 4px 0 var(--brass-deep),4px 8px 0 var(--brass-deep);
+}
+.blk{margin-top:34px}
+.btn:hover{transform:none;filter:brightness(1.06)}
+.btn:active,.btn.is-press{transform:translate(4px,4px);
+  box-shadow:inset 4px 4px 0 rgba(0,0,0,.18),4px 0 0 var(--ink),-4px 0 0 var(--ink),0 4px 0 var(--ink),0 -4px 0 var(--ink)}
+.mail__row .btn{margin:4px 8px 8px 4px;width:auto}
+
 /* ── 段落小標 ─────────────────────────────── */
 .label{
   font-family:var(--pixel-tc);font-size:13px;letter-spacing:.16em;color:var(--ink-mute);
